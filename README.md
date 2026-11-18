@@ -65,4 +65,29 @@ Java 25 · Spring Boot 4.1.2 · Spring MVC · Thymeleaf · Spring Data JPA · Sp
 
 运行 `.\mvnw.cmd test` 执行自动化回归测试。测试使用内存 H2，无需 MySQL 凭据，覆盖管理员删除权限与 CSRF、买家下单及订单归属、并发扣减、库存回滚和并发取消。
 
-演示流程可以从普通账号开始，搜索商品并下单，退出后重新登录，在「我的订单」打开订单详情。管理员取消该订单后，买家可以刷新详情查看状态变化。
+### MySQL 8.0 实际验收
+
+在与原有数据库隔离的 MySQL 8.0.46 实例上完成验收。实例使用独立数据目录和 `127.0.0.1:13316`，Spring Boot 使用 `18081` 端口。项目仍通过 MySQL Connector/J 和现有 JPA 配置运行。
+
+复现时，先启动你自己的独立 MySQL 实例，再在该实例上执行建库脚本。以下命令只为当前 PowerShell 会话指定数据库地址和账号，请按实际隔离实例调整：
+
+```powershell
+$env:SPRING_DATASOURCE_URL = 'jdbc:mysql://127.0.0.1:13316/stationery_shop?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Tokyo&characterEncoding=UTF-8'
+$env:SPRING_DATASOURCE_USERNAME = 'stationery_app'
+$env:DB_PASSWORD = Read-Host '请输入隔离实例的 MySQL 密码' -MaskInput
+$env:SERVER_PORT = '18081'
+.\mvnw.cmd spring-boot:run
+```
+
+等 Spring Boot 启动并由 Hibernate 建表后，在隔离实例的 `stationery_shop` 中导入 [演示商品](database/demo-data.sql)。注册买家和管理员演示账号，按「本地运行」的步骤授权管理员。
+
+| 验收项 | 实测结果 |
+| --- | --- |
+| 建库和导入 | `init.sql` 创建 UTF-8（`utf8mb4`）数据库，首次导入 5 件上架商品，重复导入仍为 5 件。 |
+| JPA 映射 | 5 张表、32 个字段与实体一致，核对了主键、自增、字段类型及可空性、用户名唯一约束和 2 个外键。 |
+| 登录与商品查询 | 买家和管理员登录后进入各自页面，错误密码被拒绝。搜索「笔记本」只返回两件匹配商品。 |
+| 购物车和下单 | 加购后改为 2 件，下单前库存为 36；结算金额为 17.80 元，订单和明细已保存，购物车清空，库存降至 34。 |
+| 订单权限 | 买家能打开自己的订单，其他买家访问该订单返回 HTTP 404。 |
+| 取消与回补 | 管理员取消后订单状态变为「已取消」，库存恢复至 36；再次取消仍为 36。缺少 CSRF 令牌的取消请求返回 HTTP 403。 |
+
+上述流程通过 HTTP 请求和 MySQL 查询核对。并发抢购、失败回滚和并发取消的自动化回归使用内存 H2。
