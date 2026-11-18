@@ -13,7 +13,7 @@
 
 ## 技术栈
 
-Java 25 · Spring Boot 4.1.2 · Spring MVC · Thymeleaf · Spring Data JPA · MySQL · Maven Wrapper
+Java 25 · Spring Boot 4.1.2 · Spring MVC · Thymeleaf · Spring Data JPA · Spring Security · MySQL · Maven Wrapper
 
 ## 本地运行
 
@@ -42,6 +42,6 @@ Java 25 · Spring Boot 4.1.2 · Spring MVC · Thymeleaf · Spring Data JPA · My
 
 ## 验证
 
-在已配置 MySQL 凭据的终端运行 `.\mvnw.cmd test`，验证 Spring Boot 应用上下文能否加载。
+运行 `.\mvnw.cmd test` 执行自动化回归测试。测试使用内存 H2，无需 MySQL 凭据，覆盖管理员删除权限与 CSRF、买家下单及订单归属、并发扣减、库存回滚和并发取消。
 
 演示流程可以从普通账号开始，搜索商品并下单，退出后重新登录，在「我的订单」打开订单详情。管理员取消该订单后，买家可以刷新详情查看状态变化。

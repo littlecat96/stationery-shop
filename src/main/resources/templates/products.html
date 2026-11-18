@@ -63,6 +63,10 @@
             color: #3973d6;
         }
 
+        .inline-form {
+            display: inline;
+        }
+
         .delete {
             background: #fff0f0;
             color: #e05252;
@@ -120,6 +124,9 @@
         </form>
 
         <a th:href="@{/admin/orders}" class="btn edit">订单管理</a>
+        <form class="inline-form" th:action="@{/logout}" method="post">
+            <button class="btn edit" type="submit">退出登录</button>
+        </form>
         <a th:href="@{/admin/products/new}" class="btn primary">
             + 添加商品
         </a>
@@ -159,11 +166,10 @@
                         编辑
                     </a>
 
-                    <a class="btn delete"
-                       th:href="@{/admin/products/delete/{id}(id=${product.id})}"
-                       onclick="return confirm('确定删除这个商品吗？')">
-                        删除
-                    </a>
+                    <form class="inline-form" th:action="@{/admin/products/delete/{id}(id=${product.id})}"
+                          method="post" onsubmit="return confirm('确定删除这个商品吗？')">
+                        <button class="btn delete" type="submit">删除</button>
+                    </form>
                 </td>
             </tr>
 

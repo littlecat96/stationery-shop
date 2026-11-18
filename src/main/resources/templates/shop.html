@@ -117,6 +117,15 @@
             cursor: not-allowed;
         }
 
+        .logout-form {
+            display: inline;
+        }
+
+        .logout-form button {
+            width: auto;
+            margin: 0;
+        }
+
         .shop-search {
             display: flex;
             align-items: center;
@@ -168,6 +177,9 @@
     <nav aria-label="商城导航">
         <a th:href="@{/order}">我的订单</a>
         <a th:href="@{/cart}">🛒 我的购物车</a>
+        <form class="logout-form" th:if="${session.userId != null}" th:action="@{/logout}" method="post">
+            <button type="submit">退出登录</button>
+        </form>
     </nav>
 </div>
 

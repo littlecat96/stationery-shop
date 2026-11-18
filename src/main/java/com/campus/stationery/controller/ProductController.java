@@ -71,7 +71,7 @@ public class ProductController {
     }
 
     // 删除商品
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
 
         productService.delete(id);

@@ -87,7 +87,6 @@
     </h3>
 
     <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post">
-        <input type="hidden" name="statusToken" th:value="${statusToken}">
         <label for="status">修改订单状态</label>
         <select id="status" name="status" required>
             <option th:each="status : ${statuses}" th:value="${status}"

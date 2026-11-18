@@ -61,7 +61,7 @@ public class LoginController {
     }
 
     // 退出登录
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";

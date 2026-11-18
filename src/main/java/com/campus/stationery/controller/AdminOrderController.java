@@ -3,7 +3,6 @@ package com.campus.stationery.controller;
 import com.campus.stationery.entity.CustomerOrder;
 import com.campus.stationery.repository.CustomerOrderRepository;
 import com.campus.stationery.service.OrderService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin/orders")
@@ -26,7 +24,6 @@ public class AdminOrderController {
 
     private static final List<String> ORDER_STATUSES = List.of("待处理", "已完成", "已取消");
 
-    private static final String STATUS_TOKEN = "adminOrderStatusToken";
 
     private final CustomerOrderRepository orderRepository;
 
@@ -61,29 +58,18 @@ public class AdminOrderController {
     }
 
     @GetMapping("/{id}")
-    public String orderDetail(@PathVariable("id") Long id, HttpSession session, Model model) {
+    public String orderDetail(@PathVariable("id") Long id, Model model) {
         CustomerOrder order = orderRepository.findWithItemsById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "订单不存在"));
         model.addAttribute("order", order);
         model.addAttribute("statuses", ORDER_STATUSES);
-        synchronized (session) {
-            if (session.getAttribute(STATUS_TOKEN) == null) {
-                session.setAttribute(STATUS_TOKEN, UUID.randomUUID().toString());
-            }
-            model.addAttribute("statusToken", session.getAttribute(STATUS_TOKEN));
-        }
         return "admin-order-detail";
     }
 
     @PostMapping("/{id}/status")
     public String updateStatus(@PathVariable("id") Long id,
                                @RequestParam("status") String status,
-                               @RequestParam(name = "statusToken", defaultValue = "") String statusToken,
-                               HttpSession session,
                                RedirectAttributes redirectAttributes) {
-        if (!statusToken.equals(session.getAttribute(STATUS_TOKEN))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "表单已失效，请刷新后重试");
-        }
         if (!ORDER_STATUSES.contains(status)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "订单状态无效");
         }
