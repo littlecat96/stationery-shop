@@ -1,0 +1,1 @@
+CREATE DATABASE IF NOT EXISTS stationery_shop CHARACTER SET utf8mb4;
