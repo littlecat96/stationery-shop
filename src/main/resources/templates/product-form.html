@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品信息 - 校园文具商城</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f6fa;
+            font-family: "Microsoft YaHei", sans-serif;
+            padding: 30px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .form-item {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        textarea {
+            height: 90px;
+            resize: vertical;
+        }
+
+        button, a {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .save {
+            background: #4b83e6;
+            color: white;
+        }
+
+        .cancel {
+            background: #eee;
+            color: #555;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2 th:text="${product.id == null ? '添加商品' : '修改商品'}">
+        添加商品
+    </h2>
+
+    <p style="color:#999;">请填写商品基本信息</p>
+
+    <form th:action="@{/admin/products/save}" method="post"
+          th:object="${product}">
+
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{status}">
+
+        <div class="form-item">
+            <label>商品名称</label>
+            <input type="text"
+                   th:field="*{name}"
+                   placeholder="请输入商品名称"
+                   required>
+        </div>
+
+        <div class="form-item">
+            <label>商品分类</label>
+            <input type="text"
+                   th:field="*{category}"
+                   placeholder="例如：书写工具"
+                   required>
+        </div>
+
+        <div class="form-item">
+            <label>商品价格（元）</label>
+            <input type="number"
+                   th:field="*{price}"
+                   step="0.01"
+                   min="0"
+                   placeholder="请输入商品价格"
+                   required>
+        </div>
+
+        <div class="form-item">
+            <label>库存数量</label>
+            <input type="number"
+                   th:field="*{stock}"
+                   min="0"
+                   placeholder="请输入库存数量"
+                   required>
+        </div>
+
+        <div class="form-item">
+            <label>商品描述</label>
+            <textarea th:field="*{description}"
+                      placeholder="请输入商品描述"></textarea>
+        </div>
+
+        <button type="submit" class="save">保存商品</button>
+
+        <a th:href="@{/admin/products}" class="cancel">返回列表</a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

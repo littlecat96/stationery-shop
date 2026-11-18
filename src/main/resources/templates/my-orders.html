@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的订单</title>
+    <style>
+        body { margin: 0; background: #f5f7fa; color: #222; font-family: Arial, sans-serif; }
+        main { max-width: 850px; margin: 32px auto; padding: 0 16px; }
+        a { color: #3269d3; }
+        .table-wrap { overflow-x: auto; border-radius: 10px; background: #fff; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px; text-align: left; white-space: nowrap; }
+        th { background: #eef3fa; }
+        tbody tr + tr { border-top: 1px solid #eee; }
+        .empty { padding: 24px; border-radius: 10px; background: #fff; }
+    </style>
+</head>
+<body>
+<main>
+    <a th:href="@{/shop}">返回商城</a>
+    <h1>我的订单</h1>
+    <p class="empty" th:if="${#lists.isEmpty(orders)}">你还没有订单。</p>
+    <div class="table-wrap" th:unless="${#lists.isEmpty(orders)}">
+        <table aria-label="订单列表">
+            <thead>
+            <tr>
+                <th scope="col">订单编号</th>
+                <th scope="col">下单时间</th>
+                <th scope="col">订单金额</th>
+                <th scope="col">状态</th>
+                <th scope="col">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}"></td>
+                <td th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td>￥<span th:text="${order.totalAmount}"></span></td>
+                <td th:text="${order.status}"></td>
+                <td><a th:href="@{/order/{id}(id=${order.id})}">查看详情</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

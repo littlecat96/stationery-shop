@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">订单详情</title>
+    <style>
+        body {
+            background: #f5f6fa;
+            font-family: "Microsoft YaHei", sans-serif;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .card {
+            background: white;
+            max-width: 650px;
+            margin: auto;
+            padding: 35px;
+            border-radius: 10px;
+        }
+        .success {
+            color: #36a269;
+            font-size: 26px;
+        }
+        .price {
+            color: #e46c55;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+        td, th {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 22px;
+            background: #4b83e6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+
+    <h2 th:text="${pageTitle}" class="success">订单详情</h2>
+
+    <p>
+        订单编号：
+        <span th:text="${order.id}"></span>
+    </p>
+
+    <p>
+        订单状态：
+        <span th:text="${order.status}"></span>
+    </p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>商品名称</th>
+            <th>单价</th>
+            <th>数量</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="item : ${order.items}">
+            <td th:text="${item.productName}"></td>
+            <td th:text="${item.unitPrice}"></td>
+            <td th:text="${item.quantity}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3>
+        订单总金额：
+        <span class="price"
+              th:text="'￥' + ${order.totalAmount}"></span>
+    </h3>
+
+    <a th:href="@{/order}" class="btn">我的订单</a>
+    <a th:href="@{/shop}" class="btn">
+        返回商城
+    </a>
+
+</div>
+
+</body>
+</html>

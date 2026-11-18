@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录 - 校园文具商城</title>
+    <style>
+        body {
+            margin: 0;
+            background: #f5f6fa;
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: white;
+            width: 350px;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: #4b83e6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-box">
+    <h2>校园文具商城</h2>
+    <p style="text-align:center;color:#888;">欢迎登录</p>
+
+    <form action="/login" method="post">
+        <input type="text" name="username"
+               placeholder="请输入用户名" required>
+
+        <input type="password" name="password"
+               placeholder="请输入密码" required>
+
+        <button type="submit">登 录</button>
+        <p style="color:#ff0008;text-align:center;"
+           th:if="${error}"
+           th:text="${error}">
+        </p>
+    </form>
+    <p style="text-align:center;margin-top:20px;">
+        还没有账号？
+        <a href="/register">立即注册</a>
+    </p>
+</div>
+
+</body>
+</html>

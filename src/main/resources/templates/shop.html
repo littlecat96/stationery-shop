@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园文具商城</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            background: #f5f6fa;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px #ddd;
+        }
+
+        .header h2 {
+            color: #477ee8;
+            margin: 0;
+        }
+
+        .header a {
+            text-decoration: none;
+            color: #477ee8;
+            font-size: 16px;
+        }
+
+        .container {
+            width: 84%;
+            margin: 35px auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #888;
+        }
+
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .product-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px #e5e5e5;
+        }
+
+        .product-card h3 {
+            margin-top: 5px;
+            color: #333;
+        }
+
+        .category {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .description {
+            color: #999;
+            font-size: 13px;
+            min-height: 35px;
+        }
+
+        .price {
+            color: #ed694e;
+            font-size: 22px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .stock {
+            font-size: 14px;
+            color: #777;
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            background: #477ee8;
+            color: white;
+            padding: 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #3269d3;
+        }
+
+        button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        .shop-search {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .shop-search input {
+            flex: 1 1 12rem;
+            min-width: 0;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font: inherit;
+        }
+
+        .shop-search button {
+            width: auto;
+            margin: 0;
+        }
+
+        .shop-search a {
+            color: #3269d3;
+        }
+
+        .empty {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            color: #999;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #aaa;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 顶部导航 -->
+<div class="header">
+    <h2>校园文具商城</h2>
+    <nav aria-label="商城导航">
+        <a th:href="@{/order}">我的订单</a>
+        <a th:href="@{/cart}">🛒 我的购物车</a>
+    </nav>
+</div>
+
+<div class="container">
+
+    <!-- 欢迎区域 -->
+    <div class="welcome">
+        <h2>欢迎来到校园文具商城</h2>
+        <p>精选校园文具，让学习更加方便。</p>
+    </div>
+
+    <form class="shop-search" role="search" th:action="@{/shop}" method="get">
+        <input type="search" name="keyword" aria-label="商品名称"
+               placeholder="输入商品名称" th:value="${keyword}">
+        <button type="submit">搜索商品</button>
+        <a th:if="${!keyword.isEmpty()}" th:href="@{/shop}">清除搜索</a>
+    </form>
+
+    <!-- 商品列表 -->
+    <div class="product-list" th:if="${not #lists.isEmpty(products)}">
+
+        <div class="product-card" th:each="product : ${products}">
+
+            <h3 th:text="${product.name}">商品名称</h3>
+
+            <p class="category">
+                分类：
+                <span th:text="${product.category}">书写工具</span>
+            </p>
+
+            <p class="description"
+               th:text="${product.description}">
+                商品描述
+            </p>
+
+            <div class="price">
+                ￥<span th:text="${product.price}">3.00</span>
+            </div>
+
+            <p class="stock">
+                库存：
+                <span th:text="${product.stock}">100</span>
+            </p>
+
+            <!-- 加入购物车 -->
+            <form th:action="@{/cart/add/{productId}(productId=${product.id})}"
+                  method="post">
+
+                <button type="submit"
+                        th:disabled="${product.stock <= 0}">
+                    <span th:if="${product.stock > 0}">加入购物车</span>
+                    <span th:if="${product.stock <= 0}">暂时缺货</span>
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- 没有商品时显示 -->
+    <div class="empty"
+         th:if="${#lists.isEmpty(products)}"
+         th:text="${keyword.isEmpty() ? '暂无上架商品' : '没有找到匹配的商品'}">
+        暂无上架商品
+    </div>
+
+</div>
+
+<div class="footer">
+    校园文具商城 © 2026
+</div>
+
+</body>
+</html>

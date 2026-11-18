@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的购物车 - 校园文具商城</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f6fa;
+            font-family: "Microsoft YaHei", sans-serif;
+            padding: 30px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 16px 10px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #fafafa;
+            color: #666;
+        }
+
+        input {
+            width: 65px;
+            padding: 7px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button, .btn {
+            padding: 9px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .primary {
+            background: #4b83e6;
+            color: white;
+        }
+
+        .delete {
+            background: #fff0f0;
+            color: #e05252;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 25px;
+            font-size: 20px;
+        }
+
+        .price {
+            color: #e46c55;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px;
+            color: #999;
+        }
+
+        .footer {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>我的购物车</h2>
+    <p style="color:#888;">校园文具商城 / 购物车</p>
+
+    <div class="card">
+
+        <table>
+            <thead>
+            <tr>
+                <th>商品名称</th>
+                <th>单价</th>
+                <th>数量</th>
+                <th>小计</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="item : ${items}">
+
+                <td th:text="${item.product.name}"></td>
+
+                <td>
+                    ￥<span th:text="${item.product.price}"></span>
+                </td>
+
+                <td>
+                    <form th:action="@{/cart/update/{id}(id=${item.product.id})}"
+                          method="post">
+
+                        <input type="number"
+                               name="quantity"
+                               min="1"
+                               th:max="${item.product.stock}"
+                               th:value="${item.quantity}"
+                               required>
+
+                        <button class="primary" type="submit">
+                            修改
+                        </button>
+
+                    </form>
+                </td>
+
+                <td class="price">
+                    ￥<span th:text="${item.product.price * item.quantity}"></span>
+                </td>
+
+                <td>
+                    <form th:action="@{/cart/remove/{id}(id=${item.product.id})}"
+                          method="post">
+
+                        <button class="delete" type="submit">
+                            删除
+                        </button>
+
+                    </form>
+                </td>
+
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(items)}">
+                <td colspan="5" class="empty">
+                    购物车还是空的，快去选购文具吧！
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <div class="total">
+            合计：
+            <span class="price">
+                ￥<span th:text="${total}"></span>
+            </span>
+        </div>
+
+        <div class="footer">
+
+            <a th:href="@{/shop}" class="btn primary">
+                继续购物
+            </a>
+
+            <div style="display:flex; gap:12px;">
+
+                <form th:action="@{/cart/clear}" method="post">
+                    <button type="submit" class="delete">
+                        清空购物车
+                    </button>
+                </form>
+
+                <form th:action="@{/order/create}" method="post"
+                      th:if="${!#lists.isEmpty(items)}">
+                    <button type="submit" class="primary">
+                        提交订单
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
